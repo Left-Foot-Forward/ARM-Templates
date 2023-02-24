@@ -1,0 +1,71 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/yyyy-dd-mm/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "virtualNetworkName": {
+            "type": "string",
+            "metadata": {
+                "description": "The name of the virtual network."
+            }
+        },
+        "frontEndSubnetName": {
+            "type": "string",
+            "metadata": {
+                "description": "The name of the front-end subnet."
+            }
+        },
+        "backEndSubnetName": {
+            "type": "string",
+            "metadata": {
+                "description": "The name of the back-end subnet."
+            }
+        },
+        "virtualNetworkAddressPrefix": {
+            "type": "string",
+            "metadata": {
+                "description": "The address prefix for the virtual network."
+            }
+        },
+        "frontEndSubnetAddressPrefix": {
+            "type": "string",
+            "metadata": {
+                "description": "The address prefix for the front-end subnet."
+            }
+        },
+        "backEndSubnetAddressPrefix": {
+            "type": "string",
+            "metadata": {
+                "description": "The address prefix for the back-end subnet."
+            }
+        }
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Network/virtualNetworks",
+            "apiVersion": "yyyy-dd-mm",
+            "name": "[parameters('virtualNetworkName')]",
+            "location": "[resourceGroup().location]",
+            "properties": {
+                "addressSpace": {
+                    "addressPrefixes": [
+                        "[parameters('virtualNetworkAddressPrefix')]"
+                    ]
+                },
+                "subnets": [
+                    {
+                        "name": "[parameters('frontEndSubnetName')]",
+                        "properties": {
+                            "addressPrefix": "[parameters('frontEndSubnetAddressPrefix')]"
+                        }
+                    },
+                    {
+                        "name": "[parameters('backEndSubnetName')]",
+                        "properties": {
+                            "addressPrefix": "[parameters('backEndSubnetAddressPrefix')]"
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}
