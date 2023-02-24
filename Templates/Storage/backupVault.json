@@ -1,0 +1,42 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "backupVaultName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the Azure Backup vault."
+      }
+    },
+    "storageAccountName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the Azure Storage account to use for backup."
+      }
+    },
+    "storageAccountResourceGroup": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the resource group containing the storage account."
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.RecoveryServices/vaults",
+      "name": "[parameters('backupVaultName')]",
+      "apiVersion": "2016-06-01",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "sku": {
+          "name": "Standard"
+        },
+        "backupProperties": {
+          "storageAccountProperties": {
+            "resourceId": "[concat('/subscriptions/', subscription().subscriptionId, '/resourceGroups/', parameters('storageAccountResourceGroup'), '/providers/Microsoft.Storage/storageAccounts/', parameters('storageAccountName'))]"
+          }
+        }
+      }
+    }
+  ]
+}
