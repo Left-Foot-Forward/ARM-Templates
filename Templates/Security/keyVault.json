@@ -1,0 +1,78 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "keyVaultName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the Key Vault."
+      }
+    },
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "The location of the Key Vault."
+      }
+    },
+    "tenantId": {
+      "type": "string",
+      "metadata": {
+        "description": "The Azure AD tenant ID."
+      }
+    },
+    "objectId": {
+      "type": "string",
+      "metadata": {
+        "description": "The object ID of the service principal."
+      }
+    },
+    "secretName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the secret."
+      }
+    },
+    "secretValue": {
+      "type": "securestring",
+      "metadata": {
+        "description": "The value of the secret."
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.KeyVault/vaults",
+      "name": "[parameters('keyVaultName')]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "sku": {
+          "name": "standard",
+          "family": "A"
+        },
+        "tenantId": "[parameters('tenantId')]",
+        "accessPolicies": [
+          {
+            "objectId": "[parameters('objectId')]",
+            "tenantId": "[parameters('tenantId')]",
+            "permissions": {
+              "secrets": [
+                "get",
+                "list"
+              ]
+            }
+          }
+        ]
+      },
+      "resources": [
+        {
+          "type": "secrets",
+          "name": "[parameters('secretName')]",
+          "location": "[parameters('location')]",
+          "properties": {
+            "value": "[parameters('secretValue')]"
+          }
+        }
+      ]
+    }
+  ]
+}
