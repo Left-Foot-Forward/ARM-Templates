@@ -1,7 +1,9 @@
-*ARM Templates README*
+***ARM Templates README***
+
 This repository contains a collection of Azure Resource Manager (ARM) templates that can be used to deploy various Azure resources.
 
 **Templates**
+
 `Templates/Apps/webAppCluster.json`
 This template deploys an Azure Web App in a cluster configuration. The template provisions the necessary resources to create a scalable and highly available web app cluster.
 
