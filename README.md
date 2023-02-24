@@ -1,22 +1,39 @@
-__**ARM Templates**__
+*ARM Templates README*
+This repository contains a collection of Azure Resource Manager (ARM) templates that can be used to deploy various Azure resources.
 
-1. ***Virtual network with two subnets***: This template creates a virtual network with two subnets, one for the front-end and one for the back-end. This is a fundamental template that can be used in many scenarios. You can customize the IP address ranges, subnets, and other settings according to your needs.
+**Templates**
+`Templates/Apps/webAppCluster.json`
+This template deploys an Azure Web App in a cluster configuration. The template provisions the necessary resources to create a scalable and highly available web app cluster.
 
-2. ***Azure Web App with a database***: This template creates an Azure Web App and an Azure SQL Database. The Web App is configured to connect to the SQL Database using the connection string provided by the template. You can use this template to quickly deploy a web application that requires a database.
+`Templates/Apps/webAppNodeJs.json`
+This template deploys an Azure Web App for a Node.js web application. The template provisions the necessary resources to create a scalable and highly available web app that can run Node.js applications.
 
-3. ***Azure Load Balancer with multiple VMs***: This template creates an Azure Load Balancer and multiple virtual machines that are configured to use the load balancer. You can customize the VMs' settings, such as the operating system, disk size, and network configuration. The template also creates a virtual network with a subnet for the VMs.
+`Templates/Apps/webAppWithDatabase.json`
+This template deploys an Azure Web App with an Azure SQL Database backend. The template provisions the necessary resources to create a web app that can store and retrieve data from an Azure SQL Database.
 
-4. ***Azure Kubernetes Service with a deployment***: This template creates an Azure Kubernetes Service cluster and deploys a containerized application to the cluster. You can customize the number of nodes in the cluster, the Kubernetes version, and other settings. The template also creates a virtual network with a subnet for the Kubernetes cluster.
+`Templates/Databases/sqlDatabase.json`
+This template deploys an Azure SQL Database. The template provisions the necessary resources to create a SQL Database with a specified name, collation, and edition.
 
-5. ***Azure Key Vault with secrets***: This template creates an Azure Key Vault and stores secrets in it. You can use this template to manage secrets such as passwords, API keys, and certificates in a centralized location. The template also creates an access policy that allows your applications to access the secrets stored in the Key Vault.
+`Templates/Networks/networkWithTwoSubnets.json`
+This template deploys an Azure Virtual Network with two subnets. The template provisions the necessary resources to create a virtual network with two subnets, one for web traffic and one for database traffic.
 
-***Bonus Content***
+`Templates/Networks/virtualNetwork.json`
+This template deploys an Azure Virtual Network. The template provisions the necessary resources to create a virtual network with a specified name, address space, and subnet.
 
-****StaticApp_NodeJs.json****
+`Templates/Security/azureSecurityCentre.json`
+This template deploys Azure Security Center. The template provisions the necessary resources to create a security solution for your Azure environment, including security policies, threat detection, and vulnerability assessments.
 
-To use this template, replace the following placeholders with the appropriate values:
+`Templates/Security/keyVault.json`
+This template deploys an Azure Key Vault. The template provisions the necessary resources to create a secure store for keys, secrets, and certificates.
 
-- `<username>/<repository>`: The GitHub repository that contains your Node.js web application.
-- `<keyVaultName>`: The name of the Azure Key Vault where you want to store the API credentials.
-- `<apiKeyName>`: The name of the API key that you want to store in Azure Key Vault.
-- `<yyyy-dd-mm>`: Dates need updating.
+`Templates/Storage/backupVault.json`
+This template deploys an Azure Backup vault. The template provisions the necessary resources to create a backup solution for your Azure resources, including backup policies, storage accounts, and retention settings.
+
+`Templates/Storage/storageAccount.json`
+This template deploys an Azure Storage account. The template provisions the necessary resources to create a storage account with a specified name, replication type, and access tier.
+
+**Contributing**
+Contributions to this repository are welcome! If you find a bug, have a suggestion, or want to contribute an ARM template, please open an issue or pull request.
+
+**License**
+This repository is licensed under the MIT License. See the LICENSE file for details.
