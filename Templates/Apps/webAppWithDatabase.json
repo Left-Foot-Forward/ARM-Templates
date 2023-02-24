@@ -1,0 +1,105 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "webAppName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the web app."
+      }
+    },
+    "databaseName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the database."
+      }
+    },
+    "databaseServerName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the database server."
+      }
+    },
+    "databaseUserName": {
+      "type": "string",
+      "metadata": {
+        "description": "The username for the database."
+      }
+    },
+    "databasePassword": {
+      "type": "securestring",
+      "metadata": {
+        "description": "The password for the database."
+      }
+    }
+  },
+  "variables": {
+    "sqlServerFullyQualifiedName": "[concat(parameters('databaseServerName'), '.database.windows.net')]",
+    "connectionString": "[concat('Server=tcp:', variables('sqlServerFullyQualifiedName'), ',1433;Initial Catalog=', parameters('databaseName'), ';Persist Security Info=False;UserID=', parameters('databaseUserName'), ';Password=', parameters('databasePassword'), ';MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;')]"
+},
+"resources": [
+{
+"type": "Microsoft.Web/sites",
+"name": "[parameters('webAppName')]",
+"location": "[resourceGroup().location]",
+"apiVersion": "2021-02-01",
+"dependsOn": [
+"[resourceId('Microsoft.Sql/servers', parameters('databaseServerName'))]"
+],
+"properties": {
+"name": "[parameters('webAppName')]",
+"serverFarmId": "[resourceId('Microsoft.Web/serverfarms', 'app-service-plan')]",
+"siteConfig": {
+"appSettings": [
+{
+"name": "DATABASE_CONNECTION_STRING",
+"value": "[variables('connectionString')]"
+}
+]
+}
+},
+"resources": [
+{
+"type": "Microsoft.Sql/servers/databases",
+"apiVersion": "2021-02-01-preview",
+"name": "[concat(parameters('databaseServerName'), '/', parameters('databaseName'))]",
+"location": "[resourceGroup().location]",
+"dependsOn": [
+"[resourceId('Microsoft.Sql/servers', parameters('databaseServerName'))]"
+],
+"properties": {
+"collation": "SQL_Latin1_General_CP1_CI_AS",
+"edition": "Basic",
+"maxSizeBytes": "1073741824",
+"requestedServiceObjectiveName": "Basic"
+}
+}
+]
+},
+{
+"type": "Microsoft.Sql/servers",
+"apiVersion": "2021-02-01-preview",
+"name": "[parameters('databaseServerName')]",
+"location": "[resourceGroup().location]",
+"properties": {
+"administratorLogin": "[parameters('databaseUserName')]",
+"administratorLoginPassword": "[parameters('databasePassword')]",
+"version": "12.0"
+},
+"resources": [
+{
+"type": "firewallRules",
+"apiVersion": "2021-02-01-preview",
+"name": "AllowAllWindowsAzureIps",
+"dependsOn": [
+"[resourceId('Microsoft.Sql/servers', parameters('databaseServerName'))]"
+],
+"properties": {
+"startIpAddress": "0.0.0.0",
+"endIpAddress": "0.0.0.0"
+}
+}
+]
+}
+]
+}
