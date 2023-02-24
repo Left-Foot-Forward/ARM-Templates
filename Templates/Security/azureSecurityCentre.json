@@ -1,0 +1,48 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "ascName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the Azure Security Center."
+      }
+    },
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "The location of the Azure Security Center."
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Security/locations/default",
+      "name": "[concat(parameters('location'), '/default')]",
+      "apiVersion": "2019-01-01-preview",
+      "properties": {}
+    },
+    {
+      "type": "Microsoft.Security/locations",
+      "name": "[parameters('location')]",
+      "apiVersion": "2019-01-01-preview",
+      "properties": {}
+    },
+    {
+      "type": "Microsoft.Security/autoProvisioningSettings",
+      "name": "[concat(parameters('ascName'), '/default')]",
+      "apiVersion": "2019-08-01-preview",
+      "location": "[parameters('location')]",
+      "properties": {
+        "autoProvision": true,
+        "monitoringAccountArmId": "[concat('/subscriptions/', subscription().subscriptionId, '/resourceGroups/', resourceGroup().name, '/providers/Microsoft.OperationalInsights/workspaces/', variables('workspaceName'))]"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Security/locations/default', concat(parameters('location'), '/default'))]"
+      ]
+    }
+  ],
+  "variables": {
+    "workspaceName": "[concat('security-', uniqueString(resourceGroup().id))]"
+  }
+}
