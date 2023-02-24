@@ -1,0 +1,84 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/yyyy-dd-mm/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "staticAppName": {
+            "type": "string",
+            "metadata": {
+                "description": "The name of the Azure Static App."
+            }
+        },
+        "location": {
+            "type": "string",
+            "defaultValue": "[resourceGroup().location]",
+            "metadata": {
+                "description": "The location where the Azure Static App will be created."
+            }
+        },
+        "skuName": {
+            "type": "string",
+            "defaultValue": "Free_F1",
+            "allowedValues": [
+                "Free_F1",
+                "Basic_B1"
+            ],
+            "metadata": {
+                "description": "The SKU name of the Azure Static App."
+            }
+        },
+        "apiKeyName": {
+            "type": "string",
+            "metadata": {
+                "description": "The name of the API key stored in Azure Key Vault."
+            }
+        },
+        "apiKeyValue": {
+            "type": "securestring",
+            "metadata": {
+                "description": "The value of the API key stored in Azure Key Vault."
+            }
+        }
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Web/staticSites",
+            "apiVersion": "yyyy-dd-mm",
+            "name": "[parameters('staticAppName')]",
+            "location": "[parameters('location')]",
+            "sku": {
+                "name": "[parameters('skuName')]"
+            },
+            "properties": {
+                "repositoryUrl": "https://github.com/<username>/<repository>",
+                "branch": "main",
+                "apiLocation": "/api",
+                "appArtifactLocation": "/"
+            },
+            "resources": [
+                {
+                    "type": "Microsoft.Web/staticSites/config",
+                    "apiVersion": "yyyy-dd-mm",
+                    "name": "appsettings",
+                    "dependsOn": [
+                        "[resourceId('Microsoft.Web/staticSites', parameters('staticAppName'))]"
+                    ],
+                    "properties": {
+                        "ApiKeyValue": "[concat('@Microsoft.KeyVault(SecretUri=', variables('secretUri'), ')')]"
+                    }
+                }
+            ]
+        },
+        {
+            "type": "Microsoft.KeyVault/vaults/secrets",
+            "apiVersion": "yyyy-dd-mm",
+            "name": "[concat('<keyVaultName>', '/', parameters('apiKeyName'))]",
+            "location": "[parameters('location')]",
+            "properties": {
+                "value": "[parameters('apiKeyValue')]"
+            }
+        }
+    ],
+    "variables": {
+        "secretUri": "[concat('https://', '<keyVaultName>', '.vault.azure.net/secrets/', parameters('apiKeyName'), '/', parameters('apiKeyVersion'))]"
+    }
+}
