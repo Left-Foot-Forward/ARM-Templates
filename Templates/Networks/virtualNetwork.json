@@ -1,0 +1,60 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "virtualNetworkName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the virtual network."
+      }
+    },
+    "virtualNetworkAddressPrefix": {
+      "type": "string",
+      "defaultValue": "10.0.0.0/16",
+      "metadata": {
+        "description": "The address prefix for the virtual network."
+      }
+    },
+    "subnetName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the subnet within the virtual network."
+      }
+    },
+    "subnetAddressPrefix": {
+      "type": "string",
+      "defaultValue": "10.0.0.0/24",
+      "metadata": {
+        "description": "The address prefix for the subnet within the virtual network."
+      }
+    },
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "The location of the virtual network."
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Network/virtualNetworks",
+      "name": "[parameters('virtualNetworkName')]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "addressSpace": {
+          "addressPrefixes": [
+            "[parameters('virtualNetworkAddressPrefix')]"
+          ]
+        },
+        "subnets": [
+          {
+            "name": "[parameters('subnetName')]",
+            "properties": {
+              "addressPrefix": "[parameters('subnetAddressPrefix')]"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}
